@@ -1,13 +1,15 @@
-FROM openjdk:8-alpine
+FROM maven:3.6.3-jdk-11
 
 # Required for starting application up.
-RUN apk update && apk add /bin/sh
 
-RUN mkdir -p /opt/app
-ENV PROJECT_HOME /opt/app
 
-COPY target/spring-boot-mongo-1.0.jar $PROJECT_HOME/spring-boot-mongo.jar
 
-WORKDIR $PROJECT_HOME
+COPY ./pom.xml ./pom.xml
 
-CMD ["java" ,"-jar","./spring-boot-mongo.jar"]
+WORKDIR /src/
+
+COPY . /src/
+
+RUN mvn clean install -DskipTests
+
+CMD ["java" ,"-jar","target/spring-boot-mongo-1.0.jar"]
